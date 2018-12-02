@@ -1,10 +1,24 @@
 'use strict';
 
 var userDialog = document.querySelector('.setup');
+var userNameInput = userDialog.querySelector('.setup-user-name');
+var openSetupButton = document.querySelector('.setup-open');
+var closeSetupButton = userDialog.querySelector('.setup-close');
+var wizardSetup = userDialog.querySelector('.setup-wizard');
+var wizardCoat = wizardSetup.querySelector('.wizard-coat');
+var wizardEyes = wizardSetup.querySelector('.wizard-eyes');
+var fireBallWrap = userDialog.querySelector('.setup-fireball-wrap');
 var similarListElement = userDialog.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template')
-.content
-.querySelector('.setup-similar-item');
+.content.querySelector('.setup-similar-item');
+
+var fireBallColors = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
+];
 
 var firstNames = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
 var lastNames = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
@@ -35,6 +49,12 @@ var shuffleArray = function (a) {
   }
   return a;
 };
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 var generateWizards = function (data, quantity) {
   var dataKeys = Object.keys(data);
@@ -70,7 +90,54 @@ var printWizards = function (data, quantity) {
   similarListElement.appendChild(fragment);
 };
 
-userDialog.classList.remove('hidden');
+var openUserDialog = function () {
+  userDialog.classList.remove('hidden');
+};
+
+var closeUserDialog = function () {
+  userDialog.classList.add('hidden');
+};
+
+openSetupButton.addEventListener('click', openUserDialog);
+
+openSetupButton.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === 13) {
+    openUserDialog();
+  }
+});
+
+closeSetupButton.addEventListener('click', closeUserDialog);
+closeSetupButton.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === 13) {
+    closeUserDialog();
+  }
+});
+document.addEventListener('keydown', function (evt) {
+  if (document.activeElement !== userNameInput && evt.keyCode === 27) {
+    closeUserDialog();
+  }
+});
+
+wizardCoat.addEventListener('click', function (evt) {
+  var color = coatColors[getRandomInt(0, coatColors.length)];
+  evt.target.style.fill = color;
+  var input = userDialog.querySelector('input[name=coat-color]');
+  input.value = color;
+});
+
+wizardEyes.addEventListener('click', function (evt) {
+  var color = eyesColors[getRandomInt(0, eyesColors.length)];
+  evt.target.style.fill = color;
+  var input = userDialog.querySelector('input[name=eyes-color]');
+  input.value = color;
+});
+
+fireBallWrap.addEventListener('click', function (evt) {
+  var color = fireBallColors[getRandomInt(0, fireBallColors.length)];
+  evt.target.style.backgroundColor = color;
+  var input = fireBallWrap.querySelector('input[name=fireball-color]');
+  input.value = color;
+});
 
 generateWizards(wizardsData, WIZARDS_QUANTITY);
 
