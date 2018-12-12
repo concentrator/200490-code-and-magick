@@ -4,6 +4,38 @@
 
   var userDialog = document.querySelector('.setup');
   var dialogHandle = userDialog.querySelector('.upload');
+  var userNameInput = userDialog.querySelector('.setup-user-name');
+  var openSetupButton = document.querySelector('.setup-open');
+  var closeSetupButton = userDialog.querySelector('.setup-close');
+
+  var onPopupEscPress = function (evt) {
+    if (document.activeElement !== userNameInput) {
+      window.util.isEscEvent(evt, closeUserDialog);
+    }
+  };
+
+  var openUserDialog = function () {
+    window.printSimilarWizards();
+    userDialog.classList.remove('hidden');
+    document.addEventListener('keydown', onPopupEscPress);
+  };
+
+  var closeUserDialog = function () {
+    userDialog.classList.add('hidden');
+    userDialog.removeAttribute('style');
+    document.removeEventListener('keydown', onPopupEscPress);
+  };
+
+  openSetupButton.addEventListener('click', openUserDialog);
+
+  openSetupButton.addEventListener('keydown', function (evt) {
+    window.util.isEnterEvent(evt, openUserDialog);
+  });
+
+  closeSetupButton.addEventListener('click', closeUserDialog);
+  closeSetupButton.addEventListener('keydown', function (evt) {
+    window.util.isEnterEvent(evt, closeUserDialog);
+  });
 
   dialogHandle.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
