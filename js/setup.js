@@ -10,6 +10,7 @@
   var similarListElement = userDialog.querySelector('.setup-similar-list');
   var similarWizardTemplate = document.querySelector('#similar-wizard-template')
   .content.querySelector('.setup-similar-item');
+  var form = userDialog.querySelector('.setup-wizard-form');
 
   var WIZARDS_QUANTITY = 4;
 
@@ -52,8 +53,8 @@
       } else {
         randomWizard.name = data.lastNames[j] + ' ' + data.firstNames[j];
       }
-      randomWizard.coatColor = data.coatColors[j];
-      randomWizard.eyesColor = data.eyesColors[j];
+      randomWizard.colorCoat = data.coatColors[j];
+      randomWizard.colorEyes = data.eyesColors[j];
       wizards.push(randomWizard);
     }
     return wizards;
@@ -62,8 +63,8 @@
   var renderWizard = function (wizard) {
     var wizardElement = similarWizardTemplate.cloneNode(true);
     wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
     return wizardElement;
   };
 
@@ -76,9 +77,14 @@
   };
 
   window.printSimilarWizards = function () {
-    var wizards = generateWizards(wizardsData, WIZARDS_QUANTITY);
+    // var wizards = generateWizards(wizardsData, WIZARDS_QUANTITY);
     similarListElement.innerHTML = '';
-    printWizards(wizards, WIZARDS_QUANTITY);
+    var wizards = [];
+    window.backend.load(function (response) {
+      wizards = window.util.shuffleArray(response);
+      // console.log(wizards);
+      printWizards(wizards, WIZARDS_QUANTITY);
+    }, window.dialog.showErrorPopup);
     userDialog.querySelector('.setup-similar').classList.remove('hidden');
   };
 
@@ -103,5 +109,10 @@
 
   fireBallWrap.addEventListener('click', function (evt) {
     changeElemColor(evt.target, fireBallColors, 'input[name=fireball-color]');
+  });
+
+  form.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(form), window.dialog.closeUserDialog, window.dialog.showErrorPopup);
+    evt.preventDefault();
   });
 })();
