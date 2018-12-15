@@ -22,8 +22,6 @@
     '#e6e848'
   ];
 
-  var firstNames = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-  var lastNames = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
   var coatColors = [
     'rgb(101, 137, 164)',
     'rgb(241, 43, 107)',
@@ -33,32 +31,6 @@
     'rgb(0, 0, 0)'
   ];
   var eyesColors = ['black', 'red', 'blue', 'yellow', 'green'];
-  var wizardsData = {
-    firstNames: firstNames,
-    lastNames: lastNames,
-    coatColors: coatColors,
-    eyesColors: eyesColors
-  };
-
-  var generateWizards = function (data, quantity) {
-    var wizards = [];
-    var dataKeys = Object.keys(data);
-    for (var i = 0; i < dataKeys.length; i++) {
-      window.util.shuffleArray(data[dataKeys[i]]);
-    }
-    for (var j = 0; j < quantity; j++) {
-      var randomWizard = {};
-      if (Math.floor(Math.random() * 2) === 0) {
-        randomWizard.name = data.firstNames[j] + ' ' + data.lastNames[j];
-      } else {
-        randomWizard.name = data.lastNames[j] + ' ' + data.firstNames[j];
-      }
-      randomWizard.colorCoat = data.coatColors[j];
-      randomWizard.colorEyes = data.eyesColors[j];
-      wizards.push(randomWizard);
-    }
-    return wizards;
-  };
 
   var renderWizard = function (wizard) {
     var wizardElement = similarWizardTemplate.cloneNode(true);
@@ -77,12 +49,10 @@
   };
 
   window.printSimilarWizards = function () {
-    // var wizards = generateWizards(wizardsData, WIZARDS_QUANTITY);
     similarListElement.innerHTML = '';
     var wizards = [];
     window.backend.load(function (response) {
       wizards = window.util.shuffleArray(response);
-      // console.log(wizards);
       printWizards(wizards, WIZARDS_QUANTITY);
     }, window.dialog.showErrorPopup);
     userDialog.querySelector('.setup-similar').classList.remove('hidden');
