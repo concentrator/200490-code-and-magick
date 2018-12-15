@@ -10,6 +10,7 @@
   var similarListElement = userDialog.querySelector('.setup-similar-list');
   var similarWizardTemplate = document.querySelector('#similar-wizard-template')
   .content.querySelector('.setup-similar-item');
+  var form = userDialog.querySelector('.setup-wizard-form');
 
   var WIZARDS_QUANTITY = 4;
 
@@ -21,8 +22,6 @@
     '#e6e848'
   ];
 
-  var firstNames = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-  var lastNames = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
   var coatColors = [
     'rgb(101, 137, 164)',
     'rgb(241, 43, 107)',
@@ -32,38 +31,12 @@
     'rgb(0, 0, 0)'
   ];
   var eyesColors = ['black', 'red', 'blue', 'yellow', 'green'];
-  var wizardsData = {
-    firstNames: firstNames,
-    lastNames: lastNames,
-    coatColors: coatColors,
-    eyesColors: eyesColors
-  };
-
-  var generateWizards = function (data, quantity) {
-    var wizards = [];
-    var dataKeys = Object.keys(data);
-    for (var i = 0; i < dataKeys.length; i++) {
-      window.util.shuffleArray(data[dataKeys[i]]);
-    }
-    for (var j = 0; j < quantity; j++) {
-      var randomWizard = {};
-      if (Math.floor(Math.random() * 2) === 0) {
-        randomWizard.name = data.firstNames[j] + ' ' + data.lastNames[j];
-      } else {
-        randomWizard.name = data.lastNames[j] + ' ' + data.firstNames[j];
-      }
-      randomWizard.coatColor = data.coatColors[j];
-      randomWizard.eyesColor = data.eyesColors[j];
-      wizards.push(randomWizard);
-    }
-    return wizards;
-  };
 
   var renderWizard = function (wizard) {
     var wizardElement = similarWizardTemplate.cloneNode(true);
     wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
     return wizardElement;
   };
 
@@ -76,9 +49,12 @@
   };
 
   window.printSimilarWizards = function () {
-    var wizards = generateWizards(wizardsData, WIZARDS_QUANTITY);
     similarListElement.innerHTML = '';
-    printWizards(wizards, WIZARDS_QUANTITY);
+    var wizards = [];
+    window.backend.load(function (response) {
+      wizards = window.util.shuffleArray(response);
+      printWizards(wizards, WIZARDS_QUANTITY);
+    }, window.dialog.showErrorPopup);
     userDialog.querySelector('.setup-similar').classList.remove('hidden');
   };
 
@@ -103,5 +79,10 @@
 
   fireBallWrap.addEventListener('click', function (evt) {
     changeElemColor(evt.target, fireBallColors, 'input[name=fireball-color]');
+  });
+
+  form.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(form), window.dialog.closeUserDialog, window.dialog.showErrorPopup);
+    evt.preventDefault();
   });
 })();
