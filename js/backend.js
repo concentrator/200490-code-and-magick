@@ -24,12 +24,12 @@
         onError(error);
       }
     },
-    xhrErrorHanler: function (xhr, onError) {
+    xhrErrorHandler: function (xhr, onError) {
       xhr.addEventListener('error', function () {
         onError('Произошла ошибка соединения');
       });
     },
-    xhrTimeoutHanler: function (xhr, onError, time) {
+    xhrTimeoutHandler: function (xhr, onError, time) {
       xhr.addEventListener('timeout', function () {
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
@@ -43,8 +43,8 @@
         window.backend.xhrResponseHandler(xhr, onLoad, onError);
       });
 
-      this.xhrErrorHanler(xhr, onError);
-      this.xhrTimeoutHanler(xhr, onError, 1000);
+      this.xhrErrorHandler(xhr, onError);
+      this.xhrTimeoutHandler(xhr, onError, 1000);
 
       xhr.open('GET', URL);
       xhr.send();
@@ -57,8 +57,8 @@
         window.backend.xhrResponseHandler(xhr, onLoad, onError);
       });
 
-      this.xhrErrorHanler(xhr, onError);
-      this.xhrTimeoutHanler(xhr, onError, 1000);
+      this.xhrErrorHandler(xhr, onError);
+      this.xhrTimeoutHandler(xhr, onError, 1000);
 
       xhr.open('POST', URL);
       xhr.send(data);
